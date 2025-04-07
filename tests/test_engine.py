@@ -3,7 +3,16 @@ from game_engine.engine import move_object, check_collision, is_within_bounds
 
 
 def test_move_object_up():
-    assert move_object((5, 5), "up") == (5, 4)
+    assert move_object((5, 5), "up") == (5, 6)
+
+def test_move_object_down():
+    assert move_object((5, 5), "down") == (5, 4)
+
+def test_move_object_left():
+    assert move_object((5, 5), "left") == (4, 5)
+
+def test_move_object_right():
+    assert move_object((5, 5), "right") == (6, 5)
 
 def test_move_object_invalid_direction():
     with pytest.raises(ValueError):
@@ -12,7 +21,6 @@ def test_move_object_invalid_direction():
 def test_move_object_at_origin():
     assert move_object((0, 0), "right") == (1, 0)
 
-# Tests for check_collision
 
 def test_check_collision_true():
     assert check_collision((2, 2), (2, 2)) == True
@@ -20,7 +28,6 @@ def test_check_collision_true():
 def test_check_collision_false():
     assert check_collision((2, 2), (3, 3)) == False
 
-# Tests for is_within_bounds
 
 def test_is_within_bounds_inside():
     assert is_within_bounds((3, 3), (10, 10)) == True
