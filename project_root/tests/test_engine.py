@@ -76,7 +76,55 @@ def test_intersects_same_rect():
     r = Rect2D(Vector2D(3, 3), 4, 4)
     assert r.intersects(r) is True
 
+def test_is_inner_rect_true():
+    outer = Rect2D(Vector2D(0, 0), 100, 100)
+    inner = Rect2D(Vector2D(10, 10), 20, 20)
+    assert outer.is_inner_rect(inner) is True
 
+def test_is_inner_rect_false_outside():
+    outer = Rect2D(Vector2D(0, 0), 100, 100)
+    outside = Rect2D(Vector2D(110, 110), 10, 10)
+    assert outer.is_inner_rect(outside) is False
+
+def test_is_inner_rect_false_partially_out():
+    outer = Rect2D(Vector2D(0, 0), 100, 100)
+    partial = Rect2D(Vector2D(90, 90), 20, 20)
+    assert outer.is_inner_rect(partial) is False
+
+def test_is_inner_rect_equal_size():
+    outer = Rect2D(Vector2D(0, 0), 100, 100)
+    same = Rect2D(Vector2D(0, 0), 100, 100)
+    assert outer.is_inner_rect(same) is True
+
+from engine.core import Rect2D, Vector2D
+
+def test_copy_rect_returns_new_instance():
+    original = Rect2D(Vector2D(10, 20), 100, 50)
+    copy = original.copy()
+
+    assert isinstance(copy, Rect2D)
+    assert copy is not original
+    assert copy.position is not original.position
+
+def test_copy_rect_has_same_values():
+    original = Rect2D(Vector2D(10, 20), 100, 50)
+    copy = original.copy()
+
+    assert copy.position.equals(Vector2D(10, 20))
+    assert copy.width == 100
+    assert copy.height == 50
+
+def test_modifying_copy_does_not_affect_original():
+    original = Rect2D(Vector2D(10, 20), 100, 50)
+    copy = original.copy()
+    copy.position.x = 999
+    copy.width = 1
+    copy.height = 1
+
+    # Original should remain unchanged
+    assert original.position.equals(Vector2D(10, 20))
+    assert original.width == 100
+    assert original.height == 50
 
 
 class _TestGameObject(GameObject):

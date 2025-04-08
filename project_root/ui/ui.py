@@ -1,5 +1,5 @@
 import pygame
-from engine.core import GameObject, Vector2D
+from engine.core import GameObject, Vector2D, Rect2D
 from engine.entities import Cat, Berry
 
 class GameUI:
@@ -21,6 +21,12 @@ class GameUI:
         self.frame_render_handler = frame_render_handler
         self.score_font = pygame.font.SysFont("Arial", 16)
 
+        self.screen_rect = Rect2D(
+            Vector2D(0, 0), 
+            GameUI.SCREEN_WIDTH, 
+            GameUI.SCREEN_HEIGHT
+        )
+
     def run(self):
         while self.game_running:
             self.clock.tick(60)
@@ -35,14 +41,21 @@ class GameUI:
                 self.game_running = False
 
         keys = pygame.key.get_pressed()
+        direction = Vector2D(0, 0)
         if keys[pygame.K_w]:
-            self.player.move_and_collide(Vector2D.UP, self.player.move_speed)
+            direction = direction + Vector2D.UP
         if keys[pygame.K_s]:
-            self.player.move_and_collide(Vector2D.DOWN, self.player.move_speed)
+            direction = direction + Vector2D.DOWN
         if keys[pygame.K_a]: 
-            self.player.move_and_collide(Vector2D.LEFT, self.player.move_speed)
-        if keys[pygame.K_d]: 
-            self.player.move_and_collide(Vector2D.RIGHT, self.player.move_speed)
+            direction = direction + Vector2D.LEFT
+        if keys[pygame.K_d]:
+            direction = direction + Vector2D.RIGHT
+
+        future_hitbox = self.player.hitbox.copy()
+        future_hitbox.position += direction * self.player.move_speed
+        if self.screen_rect.is_inner_rect(future_hitbox):
+            self.player.move_and_collide(direction, self.player.move_speed)
+
 
     def render(self):
         self.screen.fill((50, 50, 50))

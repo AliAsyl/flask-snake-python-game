@@ -39,6 +39,15 @@ class Rect2D:
             self.position.y + self.height <= other.position.y or
             self.position.y >= other.position.y + other.height
         )
+    def is_inner_rect(self, other):
+        return (
+            other.position.x >= self.position.x and
+            other.position.y >= self.position.y and
+            other.position.x + other.width <= self.position.x + self.width and
+            other.position.y + other.height <= self.position.y + self.height
+        )
+    def copy(self):
+        return Rect2D(Vector2D(self.position.x, self.position.y), self.width, self.height)
 
 class GameObject:
     GAME_OBJECTS = []
