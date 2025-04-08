@@ -2,8 +2,10 @@ import random
 from engine.core import GameObject, Rect2D, Vector2D
 
 class Cat(GameObject):
+    CAT_HITBOX_WIDTH = 64
+    CAT_HITBOX_HEIGHT = 64
     def __init__(self, start_pos):
-        super().__init__(Rect2D(start_pos, 64, 64))
+        super().__init__(Rect2D(start_pos, Cat.CAT_HITBOX_WIDTH, Cat.CAT_HITBOX_HEIGHT))
         self.collected_berries = 0
         self.collected_points = 0
         self.move_speed = 10
@@ -14,6 +16,8 @@ class Cat(GameObject):
             other.dispose()
 
 class Berry(GameObject):
+    BERRY_HITBOX_WIDTH = 32
+    BERRY_HITBOX_HEIGHT = 32
     def __init__(self, start_pos):
-        super().__init__(Rect2D(start_pos, 32, 32))
+        super().__init__(Rect2D(start_pos, Berry.BERRY_HITBOX_WIDTH, Berry.BERRY_HITBOX_HEIGHT))
         self.points = random.randint(10, 100)
