@@ -15,11 +15,20 @@ class Vector2D:
 
     def __rmul__(self, scalar):
         return self.__mul__(scalar)
+    
+    def equals(self, other):
+        if isinstance(other, Vector2D):
+            return self.x == other.x and self.y == other.y
+        raise TypeError("Can only compare Vector2D with other Vector2D")
 
+Vector2D.UP = Vector2D(0, -1)
+Vector2D.DOWN = Vector2D(0, 1)
+Vector2D.RIGHT = Vector2D(1, 0)
+Vector2D.LEFT = Vector2D(-1, 0)
 
 class Rect2D:
     def __init__(self, position, width, height):
-        self.position = position  # Vector2D
+        self.position = position
         self.width = width
         self.height = height
 
@@ -31,4 +40,25 @@ class Rect2D:
             self.position.y >= other.position.y + other.height
         )
 
-    
+class GameObject:
+    GAME_OBJECTS = []
+    def __init__(self, hitbox):
+        self.hitbox = hitbox
+        GameObject.GAME_OBJECTS.append(self)
+
+    def on_collision_detection(self, collided_with):
+        pass
+
+    def move_and_collide(self, direction, speed=1):
+        collided = False
+        for go in GameObject.GAME_OBJECTS:
+            if go != self and go.hitbox.intersects(self.hitbox):
+                go.on_collision_detection(self)
+                self.on_collision_detection(go)
+                collided = True
+        if not(collided):
+            self.hitbox.position += direction * speed
+
+    def dispose(self):
+        if self in GameObject.GAME_OBJECTS:
+            GameObject.GAME_OBJECTS.remove(self)

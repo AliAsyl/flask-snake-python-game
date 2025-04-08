@@ -1,5 +1,5 @@
 import pytest
-from engine.core import Vector2D, Rect2D
+from engine.core import Vector2D, Rect2D, GameObject
 
 def test_addition():
     v1 = Vector2D(1, 2)
@@ -30,6 +30,20 @@ def test_invalid_multiplication():
     with pytest.raises(TypeError):
         _ = v * "not a number"
 
+def test_vector_equality_same_values():
+    v1 = Vector2D(3, 4)
+    v2 = Vector2D(3, 4)
+    assert v1.equals(v2)
+
+def test_vector_equality_different_values():
+    v1 = Vector2D(3, 4)
+    v2 = Vector2D(4, 3)
+    assert not(v1.equals(v2))
+
+def test_vector_equality_different_type():
+    v = Vector2D(1, 2)
+    with pytest.raises(TypeError):
+        _ = v.equals((1, 2))
 
 
 
@@ -61,3 +75,51 @@ def test_intersects_inside():
 def test_intersects_same_rect():
     r = Rect2D(Vector2D(3, 3), 4, 4)
     assert r.intersects(r) is True
+
+
+
+
+class _TestGameObject(GameObject):
+    def __init__(self, hitbox):
+        super().__init__(hitbox)
+        self.collisions = []
+
+    def on_collision_detection(self, collided_with):
+        self.collisions.append(collided_with)
+
+@pytest.fixture(autouse=True)
+def clear_game_objects():
+    GameObject.GAME_OBJECTS.clear()
+
+def test_moves_without_collision():
+    obj = _TestGameObject(Rect2D(Vector2D(0, 0), 10, 10))
+
+    obj.move_and_collide(Vector2D.RIGHT, speed=5)
+
+    assert obj.hitbox.position.equals(Vector2D(5, 0))
+
+def test_no_movement_on_collision():
+    obj1 = _TestGameObject(Rect2D(Vector2D(0, 0), 10, 10))
+    obj2 = _TestGameObject(Rect2D(Vector2D(5, 0), 10, 10))
+
+    obj1.move_and_collide(Vector2D.RIGHT, speed=5)
+
+    assert obj1.hitbox.position.equals(Vector2D(0, 0))
+
+    assert obj2 in obj1.collisions
+    assert obj1 in obj2.collisions
+
+def test_dispose_removes_object():
+    obj = _TestGameObject(Rect2D(Vector2D(0, 0), 10, 10))
+    assert obj in GameObject.GAME_OBJECTS
+
+    obj.dispose()
+    assert obj not in GameObject.GAME_OBJECTS
+
+def test_multiple_steps_movement():
+    obj = _TestGameObject(Rect2D(Vector2D(0, 0), 5, 5))
+
+    obj.move_and_collide(Vector2D.RIGHT, speed=2)
+    obj.move_and_collide(Vector2D.DOWN, speed=3)
+
+    assert obj.hitbox.position.equals(Vector2D(2, 3))
