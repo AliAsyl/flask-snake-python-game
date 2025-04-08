@@ -18,7 +18,7 @@ def on_frame_randered():
         ))
 
 def main():
-    cat = Cat(Vector2D(GameUI.SCREEN_WIDTH//2, GameUI.SCREEN_HEIGHT//2))
+    cat = Cat(Vector2D(GameUI.SCREEN_WIDTH//2, GameUI.SCREEN_HEIGHT//2),   25)
     ui = GameUI(cat, on_frame_randered)
     ui.run()
 

@@ -20,7 +20,9 @@ class GameUI:
 
         self.frame_render_handler = frame_render_handler
         self.score_font = pygame.font.SysFont("Arial", 16)
+        self.splash_font = pygame.font.SysFont("Arial", 48)
 
+        self.game_ended = False
         self.screen_rect = Rect2D(
             Vector2D(0, 0), 
             GameUI.SCREEN_WIDTH, 
@@ -31,8 +33,9 @@ class GameUI:
         while self.game_running:
             self.clock.tick(60)
             self.handle_events()
-            self.render()
-            self.frame_render_handler()
+            if not(self.game_ended):
+                self.render()
+            
         pygame.quit()
 
     def handle_events(self):
@@ -69,6 +72,13 @@ class GameUI:
                 pygame.draw.rect(self.screen, (200, 200, 200),
                                  (pos.x, pos.y, obj.hitbox.width, obj.hitbox.height))
         
-        text_surface = self.score_font.render(f"Score: {self.player.collected_points}, Berries Collected: {self.player.collected_berries}", True, (255, 255, 255))
-        self.screen.blit(text_surface, (20, 20))  # top-left corner
+        text_surface = self.score_font.render(f"Score: {self.player.collected_points}, Berries Collected: {self.player.collected_berries}/{self.player.berries_to_collect}", True, (255, 255, 255))
+        
+        if self.player.berries_to_collect <= self.player.collected_berries:
+            won_text = self.splash_font.render(f"You Won with score {self.player.collected_points}!", True, (255,0,0))            
+            self.screen.blit(won_text, (70,70))
+            self.game_ended = True
+        self.screen.blit(text_surface, (20, 20))
         pygame.display.flip()
+
+        self.frame_render_handler()

@@ -63,8 +63,8 @@ def test_intersects_touching_edges():
     r1 = Rect2D(Vector2D(0, 0), 10, 10)
     r2 = Rect2D(Vector2D(10, 0), 10, 10)
     r3 = Rect2D(Vector2D(0, 10), 10, 10)
-    assert r1.intersects(r2) is False  # Touching side
-    assert r1.intersects(r3) is False  # Touching bottom
+    assert r1.intersects(r2) is False
+    assert r1.intersects(r3) is False
 
 def test_intersects_inside():
     outer = Rect2D(Vector2D(0, 0), 10, 10)
