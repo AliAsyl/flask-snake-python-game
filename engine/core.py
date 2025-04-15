@@ -21,8 +21,8 @@ class Vector2D:
             return self.x == other.x and self.y == other.y
         raise TypeError("Can only compare Vector2D with other Vector2D")
 
-Vector2D.UP = Vector2D(0, -1)
-Vector2D.DOWN = Vector2D(0, 1)
+Vector2D.UP = Vector2D(0, 1)
+Vector2D.DOWN = Vector2D(0, -1)
 Vector2D.RIGHT = Vector2D(1, 0)
 Vector2D.LEFT = Vector2D(-1, 0)
 
