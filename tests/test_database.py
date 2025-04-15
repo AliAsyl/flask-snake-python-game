@@ -21,7 +21,6 @@ def clean_db():
     Database.delete("scores", {"player_name": "Ghost"})
 
 
-# ----- Player tests -----
 
 def test_player_model_create_standard():
     player = Player("TestPlayer")
@@ -31,7 +30,7 @@ def test_player_model_create_standard():
 def test_player_model_create_edge_duplicate_insert():
     player = Player("TestPlayer")
     player.model_create()
-    player.model_create()  # Should not crash
+    player.model_create()
     result = Database.read("players", {"name": "TestPlayer"})
     assert len(result) >= 1
 
@@ -83,7 +82,6 @@ def test_get_all_players_edge_empty():
 
 
 
-# ----- ScoreRecord tests -----
 
 def test_score_record_save_standard():
     record = ScoreRecord("TestPlayer", 5, 3)
