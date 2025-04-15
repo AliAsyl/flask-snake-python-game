@@ -9,26 +9,28 @@ from pymongo import MongoClient
 class Database:
     NAME = "python-project-5"
     URI = "mongodb+srv://s30939:python-project-5-db-passwd@python-project-5-db.2gpuogz.mongodb.net/?retryWrites=true&w=majority&appName=python-project-5-db"
-    def __init__(self):
-        self.client = MongoClient(Database.URI)
-        self.db = self.client[Database.NAME]
-        self.scores = self.db["scores"]
-
-    def create_player(self, name):
-        score = {
-            "name": name,
-            "score": 0
-        }
-        return self.scores.insert_one(score).inserted_id
-
-    def read_all_players(self):
-        return list(self.scores.find())
-
-    def update_player_score(self, name, new_score):
-        return self.scores.update_one(
-            {"name": name},
-            {"$set": {"score": new_score}}
+    
+    DB = None
+    
+    @staticmethod
+    def init():
+        client = MongoClient(Database.URI)
+        Database.DB = client[Database.NAME]
+    @staticmethod
+    def create(table, data):
+        return Database.DB[table].insert_one(data).inserted_id
+    @staticmethod
+    def read_all(table):
+        return list(Database.DB[table].find())
+    @staticmethod
+    def read(table, match):
+        return list(Database.DB[table].find(match))
+    @staticmethod
+    def update(table, match, update):
+        return Database.DB[table].update_one(
+            match,
+            {"$set": update}
         )
-
-    def delete_player(self, name):
-        return self.scores.delete_one({"name": name})
+    @staticmethod
+    def delete(table, match):
+        return Database.DB[table].delete_one(match)
