@@ -9,7 +9,7 @@ from flask_cors import CORS
 import random
 
 
-
+cat = Cat(Vector2D(200, 200), 5)
 
 app = Flask(__name__)
 CORS(app)
@@ -40,11 +40,28 @@ def game_state():
     return jsonify(response)
 
 
+@app.route('/api/game/move', methods=['POST'])
+def game_move():
+    data = request.get_json()
+    direction = data.get('direction')
 
+    vec = Vector2D(0, 0)
+    if direction == 'up':
+        vec = vec + Vector2D.DOWN
+    elif direction == 'down':
+        vec = vec + Vector2D.UP
+    elif direction == 'left':
+        vec = vec + Vector2D.LEFT
+    elif direction == 'right':
+        vec = vec + Vector2D.RIGHT
+
+    cat.move_and_collide(vec, cat.move_speed)
+
+    return '', 200
 
 def main():
     Database.init()
-    cat = Cat(Vector2D(200, 200), 5)
+    
     app.run(debug=True)
 
 
