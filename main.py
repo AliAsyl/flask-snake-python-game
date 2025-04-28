@@ -5,6 +5,8 @@ from database.models import Player
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask import send_from_directory
+
 
 
 import random
@@ -15,7 +17,9 @@ cat = Cat(Vector2D(200, 200), 5)
 app = Flask(__name__)
 CORS(app)
 
-
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory('ui/assets', filename)
 
 @app.route('/api/players', methods=['GET'])
 def get_players():
@@ -45,10 +49,27 @@ def game_state():
                 "x": obj.hitbox.position.x, 
                 "y": obj.hitbox.position.y
             })
+    
+    response = {
+        "cat":{
+            "x":3,
+            "y":3,
+            "score":30,
+            "berries_collected":30,
+            "berries_required":40,
+            "game_over":False
+        },
+        "berries":[
+            {"x":1, "y": 1},
+            {"x":5, "y": 2},
+            {"x":1, "y": 9}
+        ]
+    }
+
     return jsonify(response)
 
 
-@app.route('/api/game/move', methods=['POST'])
+@app.route('/api/move', methods=['POST'])
 def game_move():
     data = request.get_json()
     direction = data.get('direction')
