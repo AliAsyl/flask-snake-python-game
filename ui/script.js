@@ -68,14 +68,42 @@ function updateGrid(gameState) {
 }
 
 
+function startNewGame() {
+    const playerName = document.getElementById('player-name').value;
+    fetch(`${API_BASE}/start_game`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ player_name: playerName })
+    }).then(response => {
+        if (response.ok) {
+            alert('Game started!');
+            window.location.href = 'game.html'; // or load game directly
+        }
+    });
+}
 
 function showForm() {}
 
-function startNewGame() {}
-
 function showScoreForm() {}
 
-function showScores() {}
+function showScores() {
+    const playerName = document.getElementById('player-name').value;
+    fetch(`${API_BASE}/scores/${playerName}`)
+        .then(response => response.json())
+        .then(data => {
+            const output = document.getElementById('output');
+            if (data.exists) {
+                output.innerHTML = `<h2>Scores of ${playerName}</h2>`;
+                output.innerHTML += '<ul>';
+                data.scores.forEach(score => {
+                    output.innerHTML += `<li>Score: ${score.score} | Berries: ${score.collected_berries}</li>`;
+                });
+                output.innerHTML += '</ul>';
+            } else {
+                output.innerHTML = `<p>Player ${playerName} not found.</p>`;
+            }
+        });
+}
 
 function quitGame() {}
 

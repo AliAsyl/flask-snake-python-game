@@ -1,7 +1,7 @@
 from engine.entities import Cat, Berry, GameObject
 from engine.core import Vector2D
 from database.db import Database
-from database.models import Player
+from database.models import Player, ScoreRecord
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -11,7 +11,7 @@ from flask import send_from_directory
 
 import random
 
-
+player = None
 cat = Cat(Vector2D(200, 200), 5)
 
 app = Flask(__name__)
@@ -86,6 +86,34 @@ def game_move():
 
     cat.move_and_collide(vec, cat.move_speed)
     return '', 200
+
+
+
+@app.route('/api/start_game', methods=['POST'])
+def start_game():
+    global player
+    data = request.get_json()
+    player_name = data.get('player_name')
+    player = Player(player_name)
+    player.load()
+    return '', 200
+
+
+@app.route('/api/scores/<player_name>', methods=['GET'])
+def get_scores(player_name):
+    player = Player(player_name)
+    if not player.exists():
+        return jsonify({"exists": False})
+    scores = ScoreRecord.load(player.name)
+    return jsonify({
+        "exists": True, 
+        "scores": [{
+            "score": s.score, 
+            "collected_berries": s.collected_berries
+        } for s in scores]}
+    )
+
+
 
 def main():
     Database.init()
