@@ -11,8 +11,10 @@ from flask import send_from_directory
 
 import random
 
-player = None
-cat = Cat(Vector2D(5, 5), 5)
+class GameStatic:
+    PLAYER = None
+    CAT = None
+    GAME_RUNNING = False
 
 app = Flask(__name__)
 CORS(app)
@@ -29,11 +31,13 @@ def get_players():
 
 @app.route('/api/game/state', methods=['GET'])
 def game_state():
+    if not(GameStatic.GAME_RUNNING):
+        return jsonify({})
+    
     response = {
         "cat":{},
         "berries":[]
     }
-    
     for obj in GameObject.GAME_OBJECTS:        
         if isinstance(obj, Cat):
             response["cat"] = {
@@ -42,7 +46,7 @@ def game_state():
                 "score": obj.collected_points,
                 "berries_collected": obj.collected_berries,
                 "berries_required": obj.berries_to_collect,
-                "game_over": obj.collected_berries >= obj.berries_to_collect
+                "game_over": (obj.collected_berries >= obj.berries_to_collect) and obj.berries_to_collect != 0
             }
         elif isinstance(obj, Berry):
             response["berries"].append({
@@ -50,12 +54,12 @@ def game_state():
                 "y": obj.hitbox.position.y
             })
 
-
     return jsonify(response)
 
 
 @app.route('/api/move', methods=['POST'])
 def game_move():
+    
     data = request.get_json()
     direction = data.get('direction')
     
@@ -68,33 +72,40 @@ def game_move():
         vec = vec + Vector2D.LEFT
     elif direction == 'right':
         vec = vec + Vector2D.RIGHT
-    if random.random() > 0.9:
-        Berry(Vector2D(
-            random.randint(0,9),
-            random.randint(0,9)
-        ))
 
-    cat.move_and_collide(vec, cat.move_speed)
+    if GameStatic.GAME_RUNNING:
+        if random.random() > 0.9:
+            Berry(Vector2D(
+                random.randint(0,9),
+                random.randint(0,9)
+            ))
+        GameStatic.CAT.move_and_collide(vec, GameStatic.CAT.move_speed)
     return '', 200
 
-
+@app.route('/api/save_score', methods=['POST'])
+def save_score():   
+    GameStatic.GAME_RUNNING = False
+    GameStatic.PLAYER.add_score(GameStatic.CAT.collected_points)
+    ScoreRecord(GameStatic.PLAYER.name, GameStatic.CAT.collected_points, GameStatic.CAT.collected_berries).save()
+    return '', 200
 
 @app.route('/api/start_game', methods=['POST'])
 def start_game():
-    global player
     data = request.get_json()
     player_name = data.get('player_name')
-    player = Player(player_name)
-    player.load()
+    GameStatic.PLAYER = Player(player_name)
+    GameStatic.PLAYER.load()
+    GameStatic.CAT = Cat(Vector2D(5, 5), 5)
+    GameStatic.GAME_RUNNING = True
     return '', 200
 
 
 @app.route('/api/scores/<player_name>', methods=['GET'])
 def get_scores(player_name):
-    player = Player(player_name)
-    if not player.exists():
+    GameStatic.PLAYER = Player(player_name)
+    if not GameStatic.PLAYER.exists():
         return jsonify({"exists": False})
-    scores = ScoreRecord.load(player.name)
+    scores = ScoreRecord.load(GameStatic.PLAYER.name)
     return jsonify({
         "exists": True, 
         "scores": [{

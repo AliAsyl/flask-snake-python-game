@@ -19,6 +19,8 @@ async function fetchGameState() {
     if (response.ok) {
         const gameState = await response.json();
         updateGrid(gameState);
+        document.getElementById('score').textContent = `Score: ${gameState.cat.score || 0}`;
+        document.getElementById('berries').textContent = `Berries Collected: ${gameState.cat.berries_collected} / ${gameState.cat.berries_required}`;    
     } 
 }
 
@@ -36,6 +38,16 @@ function generateGrid() {
     }
 }
 
+function savePlayer(){
+    fetch(`${API_BASE}/save_score`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }).then(response => {
+        if (response.ok) {
+            alert('Game saved!');
+        }
+    });
+}
 
 function updateGrid(gameState) {
     const cells = document.querySelectorAll('.cell');
@@ -64,6 +76,7 @@ function updateGrid(gameState) {
 
     if (gameState.cat.berries_collected >= gameState.cat.berries_required) {
         document.getElementById('game-over').style.display = 'block';
+        savePlayer();
     } else {
         document.getElementById('game-over').style.display = 'none';
     }
@@ -78,15 +91,13 @@ function startNewGame() {
         body: JSON.stringify({ player_name: playerName })
     }).then(response => {
         if (response.ok) {
+            fetchGameState();
             alert('Game started!');
-            window.location.href = 'game.html'; // or load game directly
         }
     });
 }
 
-function showForm() {}
 
-function showScoreForm() {}
 
 function showScores() {
     const playerName = document.getElementById('player-name').value;
@@ -106,8 +117,6 @@ function showScores() {
             }
         });
 }
-
-function quitGame() {}
 
 
 async function sendMove(direction) {

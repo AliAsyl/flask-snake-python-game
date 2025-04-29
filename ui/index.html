@@ -17,7 +17,6 @@
                 <button onclick="startNewGame()">Start New Game</button><br><br>
                 <button onclick="listPlayers()">List Players</button><br><br>
                 <button onclick="showScores()">Show My Scores</button><br><br>
-                <button onclick="">Quit</button>
             </div>
 
             <div id="output"></div>
@@ -25,10 +24,16 @@
 
         <div id="right-panel">
             <h2>Game Board</h2>
+        
+            <div id="game-stats">
+                <p id="score">Score: 0</p>
+                <p id="berries">Berries Collected: 0 / 0</p>
+            </div>
+        
             <div id="game-container"></div>
             <div id="game-over" style="display:none;">Koniec gry!</div>
         </div>
-
+        
     </div>
 
     <script src="script.js"></script>
