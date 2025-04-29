@@ -101,7 +101,7 @@ def start_game():
     player_name = data.get('player_name')
     GameStatic.PLAYER = Player(player_name)
     GameStatic.PLAYER.load()
-    GameStatic.CAT = Cat(Vector2D(5, 5), 5)
+    GameStatic.CAT = Cat(Vector2D(5, 5), 25)
     GameStatic.GAME_RUNNING = True
     return '', 200
 

@@ -1,2 +1,6 @@
 pytest
 pygame
+pymongo
+dnspython
+flask
+flask_cors
