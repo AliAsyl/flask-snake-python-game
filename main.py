@@ -12,7 +12,7 @@ from flask import send_from_directory
 import random
 
 player = None
-cat = Cat(Vector2D(200, 200), 5)
+cat = Cat(Vector2D(5, 5), 5)
 
 app = Flask(__name__)
 CORS(app)
@@ -49,22 +49,7 @@ def game_state():
                 "x": obj.hitbox.position.x, 
                 "y": obj.hitbox.position.y
             })
-    
-    response = {
-        "cat":{
-            "x":3,
-            "y":3,
-            "score":30,
-            "berries_collected":30,
-            "berries_required":40,
-            "game_over":False
-        },
-        "berries":[
-            {"x":1, "y": 1},
-            {"x":5, "y": 2},
-            {"x":1, "y": 9}
-        ]
-    }
+
 
     return jsonify(response)
 
@@ -83,6 +68,11 @@ def game_move():
         vec = vec + Vector2D.LEFT
     elif direction == 'right':
         vec = vec + Vector2D.RIGHT
+    if random.random() > 0.9:
+        Berry(Vector2D(
+            random.randint(0,9),
+            random.randint(0,9)
+        ))
 
     cat.move_and_collide(vec, cat.move_speed)
     return '', 200

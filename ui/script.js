@@ -46,12 +46,6 @@ function updateGrid(gameState) {
     const catX = gameState.cat.x;
     const catY = gameState.cat.y;
 
-    const catCell = document.querySelector(`.cell[data-x="${catX}"][data-y="${catY}"]`);
-    if (catCell) {
-        catCell.style.backgroundImage = 'url("assets/cat.png")'; 
-        catCell.style.backgroundSize = 'cover';
-    }
-
     gameState.berries.forEach(berry => {
         const berryCell = document.querySelector(`.cell[data-x="${berry.x}"][data-y="${berry.y}"]`);
         if (berryCell) {
@@ -59,6 +53,14 @@ function updateGrid(gameState) {
             berryCell.style.backgroundSize = 'cover';
         }
     });
+
+    const catCell = document.querySelector(`.cell[data-x="${catX}"][data-y="${catY}"]`);
+    if (catCell) {
+        catCell.style.backgroundImage = 'url("assets/cat.png")'; 
+        catCell.style.backgroundSize = 'cover';
+    }
+
+
 
     if (gameState.cat.berries_collected >= gameState.cat.berries_required) {
         document.getElementById('game-over').style.display = 'block';
