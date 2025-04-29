@@ -59,14 +59,11 @@ class GameObject:
         pass
 
     def move_and_collide(self, direction, speed=1):
-        collided = False
         for go in GameObject.GAME_OBJECTS:
             if go != self and go.hitbox.intersects(self.hitbox):
                 go.on_collision_detection(self)
                 self.on_collision_detection(go)
-                collided = True
-        if not(collided):
-            self.hitbox.position += direction * speed
+        self.hitbox.position += direction * speed
 
     def dispose(self):
         if self in GameObject.GAME_OBJECTS:

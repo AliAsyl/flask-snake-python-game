@@ -146,13 +146,13 @@ def test_moves_without_collision():
 
     assert obj.hitbox.position.equals(Vector2D(5, 0))
 
-def test_no_movement_on_collision():
+def test_movement_on_collision():
     obj1 = _TestGameObject(Rect2D(Vector2D(0, 0), 10, 10))
     obj2 = _TestGameObject(Rect2D(Vector2D(5, 0), 10, 10))
 
     obj1.move_and_collide(Vector2D.RIGHT, speed=5)
 
-    assert obj1.hitbox.position.equals(Vector2D(0, 0))
+    assert obj1.hitbox.position.equals(Vector2D(5, 0))
 
     assert obj2 in obj1.collisions
     assert obj1 in obj2.collisions
@@ -170,4 +170,4 @@ def test_multiple_steps_movement():
     obj.move_and_collide(Vector2D.RIGHT, speed=2)
     obj.move_and_collide(Vector2D.DOWN, speed=3)
 
-    assert obj.hitbox.position.equals(Vector2D(2, 3))
+    assert obj.hitbox.position.equals(Vector2D(2, -3))

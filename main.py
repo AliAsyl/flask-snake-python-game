@@ -107,7 +107,6 @@ def get_scores(player_name):
 
 def main():
     Database.init()
-    
     app.run(debug=True)
 
 
