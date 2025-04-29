@@ -1,5 +1,5 @@
 from engine.entities import Cat, Berry, GameObject
-from engine.core import Vector2D
+from engine.core import Vector2D, Rect2D
 from database.db import Database
 from database.models import Player, ScoreRecord
 
@@ -15,6 +15,7 @@ class GameStatic:
     PLAYER = None
     CAT = None
     GAME_RUNNING = False
+    SCREEN_RECT = Rect2D(Vector2D(0,0), 10, 10)
 
 app = Flask(__name__)
 CORS(app)
@@ -76,10 +77,15 @@ def game_move():
     if GameStatic.GAME_RUNNING:
         if random.random() > 0.9:
             Berry(Vector2D(
-                random.randint(0,9),
-                random.randint(0,9)
+                random.randint(0, GameStatic.SCREEN_RECT.width - 1),
+                random.randint(0, GameStatic.SCREEN_RECT.height - 1)
             ))
-        GameStatic.CAT.move_and_collide(vec, GameStatic.CAT.move_speed)
+        
+        future_hitbox = GameStatic.CAT.hitbox.copy()
+        future_hitbox.position += vec * GameStatic.CAT.move_speed
+        
+        if GameStatic.SCREEN_RECT.is_inner_rect(future_hitbox):
+            GameStatic.CAT.move_and_collide(vec, GameStatic.CAT.move_speed)
     return '', 200
 
 @app.route('/api/save_score', methods=['POST'])
