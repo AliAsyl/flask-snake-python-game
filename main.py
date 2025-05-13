@@ -17,7 +17,7 @@ class GameStatic:
     GAME_RUNNING = False
     SCREEN_RECT = Rect2D(Vector2D(0,0), 10, 10)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="ui", static_url_path="")
 CORS(app)
 
 @app.route('/assets/<path:filename>')
