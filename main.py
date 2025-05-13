@@ -120,6 +120,9 @@ def get_scores(player_name):
         } for s in scores]}
     )
 
+@app.route("/")
+def index():
+    return send_from_directory("ui", "index.html")
 
 
 def main():
