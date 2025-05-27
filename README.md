@@ -2,16 +2,16 @@
 
 ## 🎮 Game Instructions
 
-1. Build the Docker container:
+1. Collect the Docker container:
 
 ```bash
-docker build -t snake-game .
+docker pull aliasyl/snake-game
 ```
 
 2. Run the container:
 
 ```bash
-docker run -p 5000:5000 snake-game
+docker run -p 5000:5000 aliasyl/snake-game
 ```
 
 3. Open the game in your browser at:
