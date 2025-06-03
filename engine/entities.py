@@ -40,7 +40,7 @@ class Cat(GameObject):
         if isinstance(other, Berry):
             self.collected_berries += 1
             self.collected_points += other.points
-            self.tail.append(self.last_tail_position)
+            self.tail.append(Tail(self.last_tail_position))
 
             other.dispose()
 
