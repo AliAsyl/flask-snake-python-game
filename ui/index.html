@@ -13,6 +13,9 @@
 
             <div id="menu">
                 <input type="text" id="player-name" placeholder="Enter your name"><br><br>
+                <label for="board-size">Board Size (5 – 25):</label>
+                <input type="number" id="board-size" value="10" min="5" max="25" style="width: 4em;"><br>
+                <small>(Minimum 5×5, Maximum 25×25)</small><br><br>
                 <button onclick="startNewGame()">Start New Game</button><br><br>
                 <button onclick="listPlayers()">List Players</button><br><br>
                 <button onclick="showScores()">Show My Scores</button><br><br>
