@@ -99,10 +99,12 @@ def save_score():
 def start_game():
     data = request.get_json()
     player_name = data.get('player_name')
+    board_size = data.get('board_size')
     GameStatic.PLAYER = Player(player_name)
     GameStatic.PLAYER.load()
     GameStatic.CAT = Cat(Vector2D(5, 5), 25)
     GameStatic.GAME_RUNNING = True
+    GameStatic.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
     return '', 200
 
 
