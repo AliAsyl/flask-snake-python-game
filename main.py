@@ -50,6 +50,7 @@ def game_state():
             response["cat"] = {
                 "x":obj.hitbox.position.x,
                 "y":obj.hitbox.position.y,
+                "tail":[{"x":t.hitbox.position.x, "y":t.hitbox.position.y} for t in obj.tail],
                 "score": obj.collected_points,
                 "berries_collected": obj.collected_berries,
                 "berries_required": obj.berries_to_collect,

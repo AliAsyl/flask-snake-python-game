@@ -77,6 +77,14 @@ function updateGrid(gameState) {
         catCell.style.backgroundSize = 'cover';
     }
 
+    gameState.tail.forEach(t => {
+        const tailCell = document.querySelector(`.cell[data-x="${t.x}"][data-y="${t.y}"]`);
+        if (tailCell) {
+            tailCell.style.backgroundImage = 'url("assets/tail.png")';
+            tailCell.style.backgroundSize = 'cover';
+        }
+    });
+
     if (gameState.cat.berries_collected >= gameState.cat.berries_required) {
         document.getElementById('game-over').style.display = 'block';
         savePlayer();
