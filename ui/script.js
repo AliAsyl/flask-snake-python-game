@@ -130,7 +130,6 @@ async function sendMove(direction) {
         },
         body: JSON.stringify({ direction: direction })
     });
-    await fetchGameState();
 }
 
 function showScores() {

@@ -17,13 +17,7 @@ class GameStatic:
     GAME_RUNNING = False
     SCREEN_RECT = Rect2D(Vector2D(0,0), 10, 10)
 
-    @staticmethod
-    def move_cat():
-        future_hitbox = GameStatic.CAT.hitbox.copy()
-        future_hitbox.position += vec * GameStatic.CAT.move_speed
-            
-        if GameStatic.SCREEN_RECT.is_inner_rect(future_hitbox):
-            GameStatic.CAT.move_and_collide(vec, GameStatic.CAT.move_speed)
+
 
 app = Flask(__name__, static_folder="ui", static_url_path="")
 CORS(app)
@@ -52,6 +46,7 @@ def game_state():
     }
     for obj in GameObject.GAME_OBJECTS:        
         if isinstance(obj, Cat):
+            obj.move(GameStatic.SCREEN_RECT)
             response["cat"] = {
                 "x":obj.hitbox.position.x,
                 "y":obj.hitbox.position.y,
@@ -60,8 +55,15 @@ def game_state():
                 "berries_required": obj.berries_to_collect,
                 "game_over": (obj.collected_berries >= obj.berries_to_collect) and obj.berries_to_collect != 0
             }
-            obj.
+            
         elif isinstance(obj, Berry):
+            if GameStatic.GAME_RUNNING:
+                if random.random() > 0.9:
+                    Berry(Vector2D(
+                        random.randint(0, GameStatic.SCREEN_RECT.width - 1),
+                        random.randint(0, GameStatic.SCREEN_RECT.height - 1)
+                    ))
+
             response["berries"].append({
                 "x": obj.hitbox.position.x, 
                 "y": obj.hitbox.position.y
@@ -72,27 +74,17 @@ def game_state():
 
 @app.route('/api/move', methods=['POST'])
 def game_move():
-    
     data = request.get_json()
     direction = data.get('direction')
     
-    vec = Vector2D(0, 0)
     if direction == 'up':
-        vec = vec + Vector2D.DOWN
+        GameStatic.CAT.move_direction = Vector2D.DOWN
     elif direction == 'down':
-        vec = vec + Vector2D.UP
+        GameStatic.CAT.move_direction = Vector2D.UP
     elif direction == 'left':
-        vec = vec + Vector2D.LEFT
+        GameStatic.CAT.move_direction = Vector2D.LEFT
     elif direction == 'right':
-        vec = vec + Vector2D.RIGHT
-
-    if GameStatic.GAME_RUNNING:
-        if random.random() > 0.9:
-            Berry(Vector2D(
-                random.randint(0, GameStatic.SCREEN_RECT.width - 1),
-                random.randint(0, GameStatic.SCREEN_RECT.height - 1)
-            ))
-        
+        GameStatic.CAT.move_direction = Vector2D.RIGHT
 
     return '', 200
 
