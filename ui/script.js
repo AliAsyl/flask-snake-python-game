@@ -2,6 +2,8 @@ const API_BASE = 'http://127.0.0.1:5000/api';
 const MIN_SIZE = 5;
 const MAX_SIZE = 25;
 let currentSize = 10;
+let gameIntervalId = null;
+let lastDirection = null;
 
 function listPlayers() {
     fetch(`${API_BASE}/players`)
@@ -108,7 +110,10 @@ function startNewGame() {
         })
     }).then(response => {
         if (response.ok) {
-            alert('Game started!');
+            if (gameIntervalId !== null) {
+                clearInterval(gameIntervalId);
+            }
+            gameIntervalId = setInterval(fetchGameState, 1000);
             fetchGameState();
         } else {
             alert('Failed to start new game. Please try again.');
@@ -117,6 +122,7 @@ function startNewGame() {
 }
 
 async function sendMove(direction) {
+    lastDirection = direction;
     await fetch(`${API_BASE}/move`, {
         method: 'POST',
         headers: {
