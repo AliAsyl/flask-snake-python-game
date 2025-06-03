@@ -40,6 +40,12 @@ def game_state():
     if not(GameStatic.GAME_RUNNING):
         return jsonify({})
     
+    if random.random() > 0.5:
+        Berry(Vector2D(
+            random.randint(0, GameStatic.SCREEN_RECT.width - 1),
+            random.randint(0, GameStatic.SCREEN_RECT.height - 1)
+        ))
+
     response = {
         "cat":{},
         "berries":[]
@@ -58,13 +64,6 @@ def game_state():
             }
             
         elif isinstance(obj, Berry):
-            if GameStatic.GAME_RUNNING:
-                if random.random() > 0.9:
-                    Berry(Vector2D(
-                        random.randint(0, GameStatic.SCREEN_RECT.width - 1),
-                        random.randint(0, GameStatic.SCREEN_RECT.height - 1)
-                    ))
-
             response["berries"].append({
                 "x": obj.hitbox.position.x, 
                 "y": obj.hitbox.position.y
