@@ -17,8 +17,19 @@ class GameStatic:
     GAME_RUNNING = False
     SCREEN_RECT = Rect2D(Vector2D(0,0), 10, 10)
 
+    @staticmethod
+    def move_cat():
+        future_hitbox = GameStatic.CAT.hitbox.copy()
+        future_hitbox.position += vec * GameStatic.CAT.move_speed
+            
+        if GameStatic.SCREEN_RECT.is_inner_rect(future_hitbox):
+            GameStatic.CAT.move_and_collide(vec, GameStatic.CAT.move_speed)
+
 app = Flask(__name__, static_folder="ui", static_url_path="")
 CORS(app)
+
+
+
 
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
@@ -49,6 +60,7 @@ def game_state():
                 "berries_required": obj.berries_to_collect,
                 "game_over": (obj.collected_berries >= obj.berries_to_collect) and obj.berries_to_collect != 0
             }
+            obj.
         elif isinstance(obj, Berry):
             response["berries"].append({
                 "x": obj.hitbox.position.x, 
@@ -81,11 +93,7 @@ def game_move():
                 random.randint(0, GameStatic.SCREEN_RECT.height - 1)
             ))
         
-        future_hitbox = GameStatic.CAT.hitbox.copy()
-        future_hitbox.position += vec * GameStatic.CAT.move_speed
-        
-        if GameStatic.SCREEN_RECT.is_inner_rect(future_hitbox):
-            GameStatic.CAT.move_and_collide(vec, GameStatic.CAT.move_speed)
+
     return '', 200
 
 @app.route('/api/save_score', methods=['POST'])
