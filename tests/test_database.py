@@ -84,22 +84,22 @@ def test_get_all_players_edge_empty():
 
 
 def test_score_record_save_standard():
-    record = ScoreRecord("TestPlayer", 5, 3)
+    record = ScoreRecord("TestPlayer", 5, 3, 10)
     record.save()
     result = Database.read("scores", {"player_name": "TestPlayer"})
     assert len(result) >= 1
 
 def test_score_record_save_edge_empty_name():
-    record = ScoreRecord("", 1, 1)
+    record = ScoreRecord("", 1, 1, 10)
     record.save()
     result = Database.read("scores", {"player_name": ""})
     assert len(result) >= 1
 
 
 def test_score_record_load_standard():
-    ScoreRecord("TestPlayer", 8, 2).save()
+    ScoreRecord("TestPlayer", 8, 2, 10).save()
     results = ScoreRecord.load("TestPlayer")
-    assert any(r.score == 8 and r.collected_berries == 2 for r in results)
+    assert any(r.score == 8 and r.collected_berries == 2 and r.board_size == 10 for r in results)
 
 def test_score_record_load_edge_no_results():
     results = ScoreRecord.load("Ghost")
