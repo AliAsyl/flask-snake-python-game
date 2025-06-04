@@ -154,7 +154,7 @@ function showScores() {
             if (data.exists) {
                 output.innerHTML = `<h2>Scores of ${playerName}</h2><ul>`;
                 data.scores.forEach(score => {
-                    output.innerHTML += `<li>Score: ${score.score} | Berries: ${score.collected_berries}</li>`;
+                    output.innerHTML += `<li>Score: ${score.score} | Berries: ${score.collected_berries} | Board size: ${score.board_size}</li>`;
                 });
                 output.innerHTML += '</ul>';
             } else {

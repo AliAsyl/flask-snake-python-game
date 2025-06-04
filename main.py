@@ -78,7 +78,7 @@ def game_move():
 def save_score():   
     statics.GAME_RUNNING = False
     statics.PLAYER.add_score(statics.CAT.collected_points)
-    ScoreRecord(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries).save()
+    ScoreRecord(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries, statics.SCREEN_RECT.width).save()
     return '', 200
 
 @app.route('/api/start_game', methods=['POST'])
