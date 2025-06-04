@@ -52,17 +52,19 @@ class Player(Model):
     
 class ScoreRecord(Model):
     TABLE = "scores"
-    def __init__(self, player_name, score, collected_berries):
+    def __init__(self, player_name, score, collected_berries, board_size):
         super().__init__()
         self.player_name = player_name
         self.score = score
         self.collected_berries = collected_berries
+        self.board_size = board_size
 
     def get_as_json(self):
         return {
             'player_name':self.player_name,
             'score':self.score,
-            'collected_berries':self.collected_berries
+            'collected_berries':self.collected_berries,
+            'board_size':self.board_size
         }
 
 
@@ -71,7 +73,7 @@ class ScoreRecord(Model):
         search_results = Database.read(ScoreRecord.TABLE, {'player_name':player_name})
         records = []
         for record in search_results:
-            records.append(ScoreRecord(player_name, record['score'], record['collected_berries']))
+            records.append(ScoreRecord(player_name, record['score'], record['collected_berries'], record['board_size']))
         return records
     
     def save(self):
