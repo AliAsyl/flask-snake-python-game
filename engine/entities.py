@@ -34,6 +34,7 @@ class Cat(GameObject):
             self.collected_berries += 1
             self.collected_points += other.points
             self.tail.append(Tail(self.hitbox.copy().position))
+            statics.GAME_RUNNING = (self.collected_berries >= self.berries_to_collect) and self.berries_to_collect != 0
             
 
 
@@ -46,6 +47,7 @@ class Berry(GameObject):
     def on_collision_detection(self, collided_with):
         if isinstance(collided_with, Cat):
             self.dispose()
+            
             Berry.spawn_new_berry()
             
     

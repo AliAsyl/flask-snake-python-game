@@ -3,3 +3,4 @@ PLAYER = None
 CAT = None
 GAME_RUNNING = False
 SCREEN_RECT = None
+GAME_OVER = False

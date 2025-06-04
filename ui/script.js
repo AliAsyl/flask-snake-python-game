@@ -4,7 +4,7 @@ const MAX_SIZE = 25;
 let currentSize = 10;
 let gameIntervalId = null;
 let lastDirection = null;
-
+let gameOver = false;
 function listPlayers() {
     fetch(`${API_BASE}/players`)
     .then(response => response.json())
@@ -61,6 +61,16 @@ function updateGrid(gameState) {
         cell.style.backgroundImage = '';
     });
 
+    if(gameOver){return;}
+
+    if (gameState.gameOver) {
+        document.getElementById('game-over').style.display = 'block';
+        savePlayer();
+        gameOver = true;
+    } else {
+        document.getElementById('game-over').style.display = 'none';
+    }
+    
     gameState.berries.forEach(berry => {
         const berryCell = document.querySelector(`.cell[data-x="${berry.x}"][data-y="${berry.y}"]`);
         if (berryCell) {
@@ -68,7 +78,7 @@ function updateGrid(gameState) {
             berryCell.style.backgroundSize = 'cover';
         }
     });
-
+    
     const catX = gameState.cat.x;
     const catY = gameState.cat.y;
     const catCell = document.querySelector(`.cell[data-x="${catX}"][data-y="${catY}"]`);
@@ -85,12 +95,7 @@ function updateGrid(gameState) {
         }
     });
 
-    if (gameState.cat.berries_collected >= gameState.cat.berries_required) {
-        document.getElementById('game-over').style.display = 'block';
-        savePlayer();
-    } else {
-        document.getElementById('game-over').style.display = 'none';
-    }
+
 }
 
 function startNewGame() {
@@ -105,7 +110,7 @@ function startNewGame() {
         alert(`Board size must be a number between ${MIN_SIZE} and ${MAX_SIZE}.`);
         return;
     }
-
+    
     currentSize = boardSize;
     generateGrid(currentSize);
 
@@ -121,6 +126,7 @@ function startNewGame() {
             if (gameIntervalId !== null) {
                 clearInterval(gameIntervalId);
             }
+            gameOver = false;
             gameIntervalId = setInterval(fetchGameState, 100);
             fetchGameState();
         } else {

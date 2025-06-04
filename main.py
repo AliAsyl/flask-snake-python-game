@@ -28,14 +28,17 @@ def get_players():
 
 @app.route('/api/game/state', methods=['GET'])
 def game_state():
-    if not(statics.GAME_RUNNING):
-        return jsonify({})
+
     
 
     response = {
         "cat":{},
-        "berries":[]
+        "berries":[],
     }
+
+    if not(statics.GAME_RUNNING):
+        return jsonify({"game_over": True})
+
     for obj in GameObject.GAME_OBJECTS:        
         if isinstance(obj, Cat):
             obj.move(statics.SCREEN_RECT)
@@ -46,7 +49,6 @@ def game_state():
                 "score": obj.collected_points,
                 "berries_collected": obj.collected_berries,
                 "berries_required": obj.berries_to_collect,
-                "game_over": (obj.collected_berries >= obj.berries_to_collect) and obj.berries_to_collect != 0
             }
             
         elif isinstance(obj, Berry):
