@@ -1,7 +1,6 @@
 import random
 from engine.core import GameObject, Rect2D, Vector2D
-
-print([i for i in range(1 - 1, -1, -1)])
+import statics
 
 class Tail(GameObject):
     def __init__(self, position):
@@ -27,7 +26,6 @@ class Cat(GameObject):
                 else:
                     self.tail[i].hitbox.position = self.tail[i - 1].hitbox.position
             self.move_and_collide(self.move_direction)
-            #2
             return True
         return False
 
@@ -36,9 +34,33 @@ class Cat(GameObject):
             self.collected_berries += 1
             self.collected_points += other.points
             self.tail.append(Tail(self.hitbox.copy().position))
-            other.dispose()
+            
+
+
 
 class Berry(GameObject):
     def __init__(self, start_pos):
         super().__init__(Rect2D(start_pos, 1, 1))
         self.points = random.randint(10, 100)
+    
+    def on_collision_detection(self, collided_with):
+        if isinstance(collided_with, Cat):
+            self.dispose()
+            Berry.spawn_new_berry()
+            
+    
+    @staticmethod
+    def spawn_new_berry():
+        new_berry_position = None
+
+        while new_berry_position is None:
+            new_berry_position = Vector2D(
+                random.randint(0, statics.SCREEN_RECT.width - 1),
+                random.randint(0, statics.SCREEN_RECT.height - 1)
+            )
+            for go in GameObject.GAME_OBJECTS:
+                if new_berry_position.equals(go.hitbox.position):
+                    new_berry_position = None
+                    break
+        
+        Berry(new_berry_position)

@@ -6,16 +6,7 @@ from database.models import Player, ScoreRecord
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask import send_from_directory
-
-
-
-import random
-
-class GameStatic:
-    PLAYER = None
-    CAT = None
-    GAME_RUNNING = False
-    SCREEN_RECT = Rect2D(Vector2D(0,0), 10, 10)
+import statics
 
 
 
@@ -37,14 +28,9 @@ def get_players():
 
 @app.route('/api/game/state', methods=['GET'])
 def game_state():
-    if not(GameStatic.GAME_RUNNING):
+    if not(statics.GAME_RUNNING):
         return jsonify({})
     
-    if random.random() > 0.5:
-        Berry(Vector2D(
-            random.randint(0, GameStatic.SCREEN_RECT.width - 1),
-            random.randint(0, GameStatic.SCREEN_RECT.height - 1)
-        ))
 
     response = {
         "cat":{},
@@ -52,7 +38,7 @@ def game_state():
     }
     for obj in GameObject.GAME_OBJECTS:        
         if isinstance(obj, Cat):
-            obj.move(GameStatic.SCREEN_RECT)
+            obj.move(statics.SCREEN_RECT)
             response["cat"] = {
                 "x":obj.hitbox.position.x,
                 "y":obj.hitbox.position.y,
@@ -78,21 +64,21 @@ def game_move():
     direction = data.get('direction')
     
     if direction == 'up':
-        GameStatic.CAT.move_direction = Vector2D.DOWN
+        statics.CAT.move_direction = Vector2D.DOWN
     elif direction == 'down':
-        GameStatic.CAT.move_direction = Vector2D.UP
+        statics.CAT.move_direction = Vector2D.UP
     elif direction == 'left':
-        GameStatic.CAT.move_direction = Vector2D.LEFT
+        statics.CAT.move_direction = Vector2D.LEFT
     elif direction == 'right':
-        GameStatic.CAT.move_direction = Vector2D.RIGHT
+        statics.CAT.move_direction = Vector2D.RIGHT
 
     return '', 200
 
 @app.route('/api/save_score', methods=['POST'])
 def save_score():   
-    GameStatic.GAME_RUNNING = False
-    GameStatic.PLAYER.add_score(GameStatic.CAT.collected_points)
-    ScoreRecord(GameStatic.PLAYER.name, GameStatic.CAT.collected_points, GameStatic.CAT.collected_berries).save()
+    statics.GAME_RUNNING = False
+    statics.PLAYER.add_score(statics.CAT.collected_points)
+    ScoreRecord(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries).save()
     return '', 200
 
 @app.route('/api/start_game', methods=['POST'])
@@ -100,20 +86,21 @@ def start_game():
     data = request.get_json()
     player_name = data.get('player_name')
     board_size = data.get('board_size')
-    GameStatic.PLAYER = Player(player_name)
-    GameStatic.PLAYER.load()
-    GameStatic.CAT = Cat(Vector2D(5, 5), 25)
-    GameStatic.GAME_RUNNING = True
-    GameStatic.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
+    statics.PLAYER = Player(player_name)
+    statics.PLAYER.load()
+    statics.CAT = Cat(Vector2D(5, 5), 25)
+    statics.GAME_RUNNING = True
+    statics.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
+    Berry.spawn_new_berry()
     return '', 200
 
 
 @app.route('/api/scores/<player_name>', methods=['GET'])
 def get_scores(player_name):
-    GameStatic.PLAYER = Player(player_name)
-    if not GameStatic.PLAYER.exists():
+    statics.PLAYER = Player(player_name)
+    if not statics.PLAYER.exists():
         return jsonify({"exists": False})
-    scores = ScoreRecord.load(GameStatic.PLAYER.name)
+    scores = ScoreRecord.load(statics.PLAYER.name)
     return jsonify({
         "exists": True, 
         "scores": [{

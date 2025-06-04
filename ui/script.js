@@ -121,7 +121,7 @@ function startNewGame() {
             if (gameIntervalId !== null) {
                 clearInterval(gameIntervalId);
             }
-            gameIntervalId = setInterval(fetchGameState, 1000);
+            gameIntervalId = setInterval(fetchGameState, 100);
             fetchGameState();
         } else {
             alert('Failed to start new game. Please try again.');
