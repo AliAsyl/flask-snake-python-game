@@ -28,16 +28,14 @@ def get_players():
 
 @app.route('/api/game/state', methods=['GET'])
 def game_state():
-
-    
-
     response = {
         "cat":{},
         "berries":[],
+        "game_over":statics.GAME_OVER
     }
 
     if not(statics.GAME_RUNNING):
-        return jsonify({"game_over": True})
+        return jsonify(response)
 
     for obj in GameObject.GAME_OBJECTS:        
         if isinstance(obj, Cat):
@@ -92,6 +90,7 @@ def start_game():
     statics.PLAYER.load()
     statics.CAT = Cat(Vector2D(5, 5), 25)
     statics.GAME_RUNNING = True
+    statics.GAME_OVER = False
     statics.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
     Berry.spawn_new_berry()
     return '', 200

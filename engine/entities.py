@@ -34,7 +34,8 @@ class Cat(GameObject):
             self.collected_berries += 1
             self.collected_points += other.points
             self.tail.append(Tail(self.hitbox.copy().position))
-            statics.GAME_RUNNING = (self.collected_berries >= self.berries_to_collect) and self.berries_to_collect != 0
+            print(self.collected_berries, self.berries_to_collect)
+            statics.GAME_OVER = (self.collected_berries >= self.berries_to_collect) and self.berries_to_collect != 0
             
 
 

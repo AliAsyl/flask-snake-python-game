@@ -2,9 +2,11 @@ const API_BASE = 'http://127.0.0.1:5000/api';
 const MIN_SIZE = 5;
 const MAX_SIZE = 25;
 let currentSize = 10;
+
 let gameIntervalId = null;
 let lastDirection = null;
 let gameOver = false;
+
 function listPlayers() {
     fetch(`${API_BASE}/players`)
     .then(response => response.json())
@@ -61,15 +63,13 @@ function updateGrid(gameState) {
         cell.style.backgroundImage = '';
     });
 
-    if(gameOver){return;}
-
-    if (gameState.gameOver) {
+    if(!gameOver && gameState.game_over){
         document.getElementById('game-over').style.display = 'block';
         savePlayer();
         gameOver = true;
-    } else {
-        document.getElementById('game-over').style.display = 'none';
+        return;
     }
+    document.getElementById('game-over').style.display = 'none';
     
     gameState.berries.forEach(berry => {
         const berryCell = document.querySelector(`.cell[data-x="${berry.x}"][data-y="${berry.y}"]`);
