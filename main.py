@@ -60,6 +60,9 @@ def game_state():
 
 @app.route('/api/move', methods=['POST'])
 def game_move():
+    if not(statics.GAME_RUNNING):
+        return '', 200
+    
     data = request.get_json()
     direction = data.get('direction')
     
@@ -77,6 +80,7 @@ def game_move():
 @app.route('/api/save_score', methods=['POST'])
 def save_score():   
     statics.GAME_RUNNING = False
+
     statics.PLAYER.add_score(statics.CAT.collected_points)
     ScoreRecord(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries, statics.SCREEN_RECT.width).save()
     return '', 200
@@ -92,6 +96,7 @@ def start_game():
     statics.GAME_RUNNING = True
     statics.GAME_OVER = False
     statics.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
+    print("HEEEEEEEEEEEEEEE")
     Berry.spawn_new_berry()
     return '', 200
 

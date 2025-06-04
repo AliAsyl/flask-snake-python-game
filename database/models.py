@@ -73,6 +73,7 @@ class ScoreRecord(Model):
         search_results = Database.read(ScoreRecord.TABLE, {'player_name':player_name})
         records = []
         for record in search_results:
+            print(record)
             records.append(ScoreRecord(player_name, record['score'], record['collected_berries'], record['board_size']))
         return records
     

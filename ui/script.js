@@ -67,35 +67,35 @@ function updateGrid(gameState) {
         document.getElementById('game-over').style.display = 'block';
         savePlayer();
         gameOver = true;
-        return;
     }
-    document.getElementById('game-over').style.display = 'none';
     
-    gameState.berries.forEach(berry => {
-        const berryCell = document.querySelector(`.cell[data-x="${berry.x}"][data-y="${berry.y}"]`);
-        if (berryCell) {
-            berryCell.style.backgroundImage = 'url("assets/berry.png")';
-            berryCell.style.backgroundSize = 'cover';
+    if(!gameOver){
+        document.getElementById('game-over').style.display = 'none';
+        
+        gameState.berries.forEach(berry => {
+            const berryCell = document.querySelector(`.cell[data-x="${berry.x}"][data-y="${berry.y}"]`);
+            if (berryCell) {
+                berryCell.style.backgroundImage = 'url("assets/berry.png")';
+                berryCell.style.backgroundSize = 'cover';
+            }
+        });
+        
+        const catX = gameState.cat.x;
+        const catY = gameState.cat.y;
+        const catCell = document.querySelector(`.cell[data-x="${catX}"][data-y="${catY}"]`);
+        if (catCell) {
+            catCell.style.backgroundImage = 'url("assets/cat.png")';
+            catCell.style.backgroundSize = 'cover';
         }
-    });
-    
-    const catX = gameState.cat.x;
-    const catY = gameState.cat.y;
-    const catCell = document.querySelector(`.cell[data-x="${catX}"][data-y="${catY}"]`);
-    if (catCell) {
-        catCell.style.backgroundImage = 'url("assets/cat.png")';
-        catCell.style.backgroundSize = 'cover';
+
+        gameState.cat.tail.forEach(t => {
+            const tailCell = document.querySelector(`.cell[data-x="${t.x}"][data-y="${t.y}"]`);
+            if (tailCell) {
+                tailCell.style.backgroundImage = 'url("assets/tail.png")';
+                tailCell.style.backgroundSize = 'cover';
+            }
+        });
     }
-
-    gameState.cat.tail.forEach(t => {
-        const tailCell = document.querySelector(`.cell[data-x="${t.x}"][data-y="${t.y}"]`);
-        if (tailCell) {
-            tailCell.style.backgroundImage = 'url("assets/tail.png")';
-            tailCell.style.backgroundSize = 'cover';
-        }
-    });
-
-
 }
 
 function startNewGame() {
