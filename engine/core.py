@@ -66,6 +66,7 @@ class GameObject:
     def move_and_collide(self, direction, speed=1):
         for go in GameObject.GAME_OBJECTS:
             if go != self and go.hitbox.intersects(self.hitbox):
+                print(f"!!>>> self: {self}, {self.hitbox}| go: {go}, {go.hitbox}")
                 go.on_collision_detection(self)
                 self.on_collision_detection(go)
         self.hitbox.position += direction * speed

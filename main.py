@@ -93,9 +93,9 @@ def start_game():
     board_size = data.get('board_size')
     statics.PLAYER = Player(player_name)
     statics.PLAYER.load()
-    statics.CAT = Cat(Vector2D(5, 5), 5)
-    statics.GAME_RUNNING = True
+    statics.CAT = Cat(Vector2D(5, 5), 25)
     statics.GAME_OVER = False
+    statics.GAME_RUNNING = True
     statics.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
     Berry.spawn_new_berry()
     return '', 200

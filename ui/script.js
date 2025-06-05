@@ -52,6 +52,7 @@ function savePlayer() {
         headers: { 'Content-Type': 'application/json' }
     }).then(response => {
         if (response.ok) {
+            gameOver = false;
             alert('Game saved!');
         }
     });
@@ -68,7 +69,7 @@ function updateGrid(gameState) {
         savePlayer();
         gameOver = true;
     }
-    
+
     if(!gameOver){
         document.getElementById('game-over').style.display = 'none';
         
@@ -99,6 +100,7 @@ function updateGrid(gameState) {
 }
 
 function startNewGame() {
+    
     const playerName = document.getElementById('player-name').value.trim();
     if (!playerName) {
         alert('Please enter your name before starting.');
@@ -126,7 +128,7 @@ function startNewGame() {
             if (gameIntervalId !== null) {
                 clearInterval(gameIntervalId);
             }
-            gameOver = false;
+            
             gameIntervalId = setInterval(fetchGameState, 100);
             fetchGameState();
         } else {
