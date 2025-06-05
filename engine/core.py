@@ -49,6 +49,8 @@ class Rect2D:
             other.position.x + other.width <= self.position.x + self.width and
             other.position.y + other.height <= self.position.y + self.height
         )
+    def __str__(self):
+        return f"[Rect@{self.position}:{self.width}x{self.height}]"
     def copy(self):
         return Rect2D(Vector2D(self.position.x, self.position.y), self.width, self.height)
 
