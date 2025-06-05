@@ -82,6 +82,7 @@ def save_score():
     statics.GAME_RUNNING = False
 
     statics.PLAYER.add_score(statics.CAT.collected_points)
+    print(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries, statics.SCREEN_RECT.width)
     ScoreRecord(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries, statics.SCREEN_RECT.width).save()
     return '', 200
 
@@ -92,11 +93,10 @@ def start_game():
     board_size = data.get('board_size')
     statics.PLAYER = Player(player_name)
     statics.PLAYER.load()
-    statics.CAT = Cat(Vector2D(5, 5), 25)
+    statics.CAT = Cat(Vector2D(5, 5), 5)
     statics.GAME_RUNNING = True
     statics.GAME_OVER = False
     statics.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
-    print("HEEEEEEEEEEEEEEE")
     Berry.spawn_new_berry()
     return '', 200
 
@@ -109,10 +109,7 @@ def get_scores(player_name):
     scores = ScoreRecord.load(statics.PLAYER.name)
     return jsonify({
         "exists": True, 
-        "scores": [{
-            "score": s.score, 
-            "collected_berries": s.collected_berries
-        } for s in scores]}
+        "scores": [s.get_as_json() for s in scores]}
     )
 
 @app.route("/")
