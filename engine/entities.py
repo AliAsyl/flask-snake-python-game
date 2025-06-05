@@ -20,25 +20,27 @@ class Cat(GameObject):
         future_hitbox = self.hitbox.copy()
         future_hitbox.position += self.move_direction
         if board.is_inner_rect(future_hitbox):
+            if len(self.tail) == 0:
+                self.move_and_collide(self.move_direction)
+                return
             for i in range(len(self.tail) - 1,-1,-1):
                 if i == 0:
-                    self.tail[i].hitbox.position = self.hitbox.copy().position
+                    current_pos = self.hitbox.copy().position
+                    print(">>> ", current_pos, [str(i.hitbox.position) for i in self.tail])
+                    self.move_and_collide(self.move_direction)
+                    self.tail[i].hitbox.position = current_pos
                 else:
                     self.tail[i].hitbox.position = self.tail[i - 1].hitbox.position
-            self.move_and_collide(self.move_direction)
-            return True
-        return False
+
 
     def on_collision_detection(self, other):
         if isinstance(other, Berry):
             self.collected_berries += 1
             self.collected_points += other.points
             self.tail.append(Tail(self.hitbox.copy().position))
-            print(self.collected_berries, self.berries_to_collect)
             statics.GAME_OVER = (self.collected_berries >= self.berries_to_collect) and self.berries_to_collect != 0
-            
-
-
+        elif isinstance(other, Tail):
+            statics.GAME_OVER = True
 
 class Berry(GameObject):
     def __init__(self, start_pos):

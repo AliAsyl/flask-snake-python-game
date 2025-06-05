@@ -16,6 +16,9 @@ class Vector2D:
     def __rmul__(self, scalar):
         return self.__mul__(scalar)
     
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+    
     def equals(self, other):
         if isinstance(other, Vector2D):
             return self.x == other.x and self.y == other.y
