@@ -74,3 +74,4 @@ class GameObject:
     def dispose(self):
         if self in GameObject.GAME_OBJECTS:
             GameObject.GAME_OBJECTS.remove(self)
+    

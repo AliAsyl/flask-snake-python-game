@@ -31,7 +31,8 @@ def game_state():
     response = {
         "cat":{},
         "berries":[],
-        "game_over":statics.GAME_OVER
+        "game_over":statics.GAME_OVER,
+        "game_running":statics.GAME_RUNNING,
     }
 
     if not(statics.GAME_RUNNING):
@@ -80,10 +81,11 @@ def game_move():
 @app.route('/api/save_score', methods=['POST'])
 def save_score():   
     statics.GAME_RUNNING = False
-
+    statics.CAT.clear_tail()
     statics.PLAYER.add_score(statics.CAT.collected_points)
     print(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries, statics.SCREEN_RECT.width)
     ScoreRecord(statics.PLAYER.name, statics.CAT.collected_points, statics.CAT.collected_berries, statics.SCREEN_RECT.width).save()
+
     return '', 200
 
 @app.route('/api/start_game', methods=['POST'])
@@ -94,8 +96,8 @@ def start_game():
     statics.PLAYER = Player(player_name)
     statics.PLAYER.load()
     statics.CAT = Cat(Vector2D(5, 5), 25)
-    statics.GAME_OVER = False
     statics.GAME_RUNNING = True
+    statics.GAME_OVER = False
     statics.SCREEN_RECT = Rect2D(Vector2D(0,0), board_size, board_size)
     Berry.spawn_new_berry()
     return '', 200

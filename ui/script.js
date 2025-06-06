@@ -5,7 +5,7 @@ let currentSize = 10;
 
 let gameIntervalId = null;
 let lastDirection = null;
-let gameOver = false;
+let gameOverNotified = false;
 
 function listPlayers() {
     fetch(`${API_BASE}/players`)
@@ -25,8 +25,15 @@ async function fetchGameState() {
     if (response.ok) {
         const gameState = await response.json();
         updateGrid(gameState);
-        document.getElementById('score').textContent = `Score: ${gameState.cat.score || 0}`;
-        document.getElementById('berries').textContent = `Berries Collected: ${gameState.cat.berries_collected} / ${gameState.cat.berries_required}`;
+        if(gameState.game_running){
+            document.getElementById('score').textContent = `Score: ${gameState.cat.score || 0}`;
+            document.getElementById('berries').textContent = `Berries Collected: ${gameState.cat.berries_collected} / ${gameState.cat.berries_required}`;
+            if(!gameOverNotified && gameState.game_over){
+                document.getElementById('game-over').style.display = 'block';
+                savePlayer();
+                gameOverNotified = true;
+            }
+        }
     }
 }
 
@@ -52,7 +59,7 @@ function savePlayer() {
         headers: { 'Content-Type': 'application/json' }
     }).then(response => {
         if (response.ok) {
-            gameOver = false;
+            
             alert('Game saved!');
         }
     });
@@ -64,15 +71,9 @@ function updateGrid(gameState) {
         cell.style.backgroundImage = '';
     });
 
-    if(!gameOver && gameState.game_over){
-        document.getElementById('game-over').style.display = 'block';
-        savePlayer();
-        gameOver = true;
-    }
-
-    if(!gameOver){
-        document.getElementById('game-over').style.display = 'none';
-        
+    document.getElementById('game-over').style.display = 'none';
+    
+    if(gameState.game_running){
         gameState.berries.forEach(berry => {
             const berryCell = document.querySelector(`.cell[data-x="${berry.x}"][data-y="${berry.y}"]`);
             if (berryCell) {
@@ -135,6 +136,8 @@ function startNewGame() {
             alert('Failed to start new game. Please try again.');
         }
     });
+
+    gameOverNotified = false;
 }
 
 async function sendMove(direction) {

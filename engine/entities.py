@@ -40,8 +40,12 @@ class Cat(GameObject):
             if not(other.visible):
                 other.visible = True
                 return
-            statics.GAME_RUNNING = False
             statics.GAME_OVER = True
+
+    def clear_tail(self):
+        for t in self.tail:
+            t.dispose()
+        self.tail = []
 
 class Berry(GameObject):
     def __init__(self, start_pos):
