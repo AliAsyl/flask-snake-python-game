@@ -15,8 +15,7 @@ class Cat(GameObject):
         self.collected_points = 0
         self.berries_to_collect = berries_to_collect
         self.tail = []
-
-
+        
     def move(self, board):
         future_hitbox = self.hitbox.copy()
         future_hitbox.position += self.move_direction
