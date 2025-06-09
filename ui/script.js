@@ -93,7 +93,7 @@ function updateGrid(gameState) {
         gameState.cat.tail.forEach(t => {
             const tailCell = document.querySelector(`.cell[data-x="${t.x}"][data-y="${t.y}"]`);
             if (tailCell) {
-                tailCell.style.backgroundImage = 'url("assets/tail.png")';
+                tailCell.style.backgroundImage = 'url("assets/cat.png")';
                 tailCell.style.backgroundSize = 'cover';
             }
         });
