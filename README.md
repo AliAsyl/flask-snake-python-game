@@ -1,4 +1,4 @@
-# s30939-python-game
+# flask-snake-python-game
 
 ## 🎮 Game Instructions
 
